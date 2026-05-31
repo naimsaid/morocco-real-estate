@@ -1,0 +1,145 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Trouvez votre propriété de rêve au Maroc</h1>
+      <p>Achetez, vendez ou louez des biens immobiliers dans tout le Maroc</p>
+      <div class="hero-buttons">
+        <button mat-raised-button color="primary" routerLink="/search">Rechercher</button>
+        <button mat-raised-button color="accent" routerLink="/add-property" *ngIf="authService.isLoggedIn()">Publier une annonce</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Quick Filters -->
+  <section class="quick-search">
+    <div class="container">
+      <div class="search-filters">
+        <mat-form-field appearance="outline">
+          <mat-label>Type de bien</mat-label>
+          <mat-select [(value)]="searchFilters.propertyType">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let type of propertyTypes" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Type d'annonce</mat-label>
+          <mat-select [(value)]="searchFilters.listingType">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let type of listingTypes" [value]="type">{{ type === 'SALE' ? 'À vendre' : 'À louer' }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ville</mat-label>
+          <mat-select [(value)]="searchFilters.city">
+            <mat-option value="">Toutes les villes</mat-option>
+            <mat-option *ngFor="let city of cities" [value]="city">{{ city }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+          Rechercher
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Properties -->
+  <section class="featured-section" *ngIf="!loading">
+    <div class="container">
+      <h2>Propriétés en vedette</h2>
+      <div class="properties-grid">
+        <mat-card *ngFor="let property of featuredProperties" class="property-card" [routerLink]="['/properties', property.id]">
+          <div class="property-image">
+            <app-property-image-carousel [images]="property.imageUrls" [alt]="property.title"></app-property-image-carousel>
+            <div class="property-badge" *ngIf="property.featured">
+              <span class="badge-featured">En vedette</span>
+            </div>
+            <div class="property-type">
+              <span class="badge-type">{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+            </div>
+          </div>
+          <mat-card-content>
+            <h3 class="property-title">{{ property.title }}</h3>
+            <p class="property-price">{{ property.price | currency:'MAD':'symbol' }}</p>
+            <p class="property-location">
+              <mat-icon>location_on</mat-icon>
+              {{ property.city }}, {{ property.region }}
+            </p>
+            <div class="property-details">
+              <span *ngIf="property.bedrooms">
+                <mat-icon>bed</mat-icon> {{ property.bedrooms }} Chambres
+              </span>
+              <span *ngIf="property.bathrooms">
+                <mat-icon>bath</mat-icon> {{ property.bathrooms }} SDB
+              </span>
+              <span>
+                <mat-icon>square_foot</mat-icon> {{ property.area }} m²
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <!-- Recent Properties -->
+  <section class="recent-section" *ngIf="!loading">
+    <div class="container">
+      <h2>Dernières propriétés</h2>
+      <div class="properties-grid">
+        <mat-card *ngFor="let property of recentProperties" class="property-card" [routerLink]="['/properties', property.id]">
+          <div class="property-image">
+            <app-property-image-carousel [images]="property.imageUrls" [alt]="property.title"></app-property-image-carousel>
+            <div class="property-type">
+              <span class="badge-type">{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+            </div>
+          </div>
+          <mat-card-content>
+            <h3 class="property-title">{{ property.title }}</h3>
+            <p class="property-price">{{ property.price | currency:'MAD':'symbol' }}</p>
+            <p class="property-location">
+              <mat-icon>location_on</mat-icon>
+              {{ property.city }}, {{ property.region }}
+            </p>
+            <div class="property-details">
+              <span *ngIf="property.bedrooms">
+                <mat-icon>bed</mat-icon> {{ property.bedrooms }} Chambres
+              </span>
+              <span *ngIf="property.bathrooms">
+                <mat-icon>bath</mat-icon> {{ property.bathrooms }} SDB
+              </span>
+              <span>
+                <mat-icon>square_foot</mat-icon> {{ property.area }} m²
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Prêt à trouver votre propriété idéale?</h2>
+        <p>Inscrivez-vous maintenant pour accéder à toutes les fonctionnalités</p>
+        <button mat-raised-button color="primary" routerLink="/register" *ngIf="!authService.isLoggedIn()">
+          S'inscrire gratuitement
+        </button>
+        <button mat-raised-button color="primary" routerLink="/add-property" *ngIf="authService.isLoggedIn()">
+          Publier une annonce
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

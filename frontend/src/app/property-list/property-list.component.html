@@ -1,0 +1,55 @@
+<div class="property-list-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Toutes les propriétés</h1>
+      <p>Découvrez notre sélection de biens immobiliers au Maroc</p>
+    </div>
+
+    <div class="loading-container" *ngIf="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div class="properties-grid" *ngIf="!loading">
+      <mat-card *ngFor="let property of properties" class="property-card" [routerLink]="['/properties', property.id]">
+        <div class="property-image">
+          <app-property-image-carousel [images]="property.imageUrls" [alt]="property.title"></app-property-image-carousel>
+          <div class="property-badge" *ngIf="property.featured">
+            <span class="badge-featured">En vedette</span>
+          </div>
+          <div class="property-type">
+            <span class="badge-type">{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+          </div>
+        </div>
+        <mat-card-content>
+          <h3 class="property-title">{{ property.title }}</h3>
+          <p class="property-price">{{ property.price | currency:'MAD':'symbol' }}</p>
+          <p class="property-location">
+            <mat-icon>location_on</mat-icon>
+            {{ property.city }}, {{ property.region }}
+          </p>
+          <div class="property-details">
+            <span *ngIf="property.bedrooms">
+              <mat-icon>bed</mat-icon> {{ property.bedrooms }} Chambres
+            </span>
+            <span *ngIf="property.bathrooms">
+              <mat-icon>bath</mat-icon> {{ property.bathrooms }} SDB
+            </span>
+            <span>
+              <mat-icon>square_foot</mat-icon> {{ property.area }} m²
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="pagination" *ngIf="!loading && totalPages > 1">
+      <mat-paginator
+        [length]="totalPages * pageSize"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
+        (page)="onPageChange($event.pageIndex)"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </div>
+</div>

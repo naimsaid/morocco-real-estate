@@ -1,0 +1,144 @@
+<div class="search-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Rechercher une propriété</h1>
+      <p>Trouvez la propriété idéale au Maroc</p>
+    </div>
+
+    <!-- Search Filters -->
+    <mat-card class="search-filters-card">
+      <div class="filters-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Type de bien</mat-label>
+          <mat-select [(ngModel)]="searchRequest.propertyType">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let type of propertyTypes" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Type d'annonce</mat-label>
+          <mat-select [(ngModel)]="searchRequest.listingType">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let type of listingTypes" [value]="type">
+              {{ type === 'SALE' ? 'À vendre' : 'À louer' }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ville</mat-label>
+          <mat-select [(ngModel)]="searchRequest.city">
+            <mat-option value="">Toutes les villes</mat-option>
+            <mat-option *ngFor="let city of cities" [value]="city">
+              {{ city }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Région</mat-label>
+          <mat-select [(ngModel)]="searchRequest.region">
+            <mat-option value="">Toutes les régions</mat-option>
+            <mat-option *ngFor="let region of regions" [value]="region">
+              {{ region }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Prix min (MAD)</mat-label>
+          <input matInput type="number" [(ngModel)]="searchRequest.minPrice" placeholder="Prix minimum">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Prix max (MAD)</mat-label>
+          <input matInput type="number" [(ngModel)]="searchRequest.maxPrice" placeholder="Prix maximum">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Chambres min</mat-label>
+          <input matInput type="number" [(ngModel)]="searchRequest.minBedrooms" placeholder="Chambres minimum">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>SDB min</mat-label>
+          <input matInput type="number" [(ngModel)]="searchRequest.minBathrooms" placeholder="SDB minimum">
+        </mat-form-field>
+      </div>
+
+      <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="onSearch()">
+          <mat-icon>search</mat-icon>
+          Rechercher
+        </button>
+        <button mat-button (click)="onReset()">
+          <mat-icon>refresh</mat-icon>
+          Réinitialiser
+        </button>
+      </div>
+    </mat-card>
+
+    <!-- Results -->
+    <div class="loading-container" *ngIf="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div class="search-results" *ngIf="!loading">
+      <div class="results-header">
+        <h2>{{ properties.length }} propriété(s) trouvée(s)</h2>
+      </div>
+
+      <div class="properties-grid" *ngIf="properties.length > 0">
+        <mat-card *ngFor="let property of properties" class="property-card" [routerLink]="['/properties', property.id]">
+          <div class="property-image">
+            <app-property-image-carousel [images]="property.imageUrls" [alt]="property.title"></app-property-image-carousel>
+            <div class="property-badge" *ngIf="property.featured">
+              <span class="badge-featured">En vedette</span>
+            </div>
+            <div class="property-type">
+              <span class="badge-type">{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+            </div>
+          </div>
+          <mat-card-content>
+            <h3 class="property-title">{{ property.title }}</h3>
+            <p class="property-price">{{ property.price | currency:'MAD':'symbol' }}</p>
+            <p class="property-location">
+              <mat-icon>location_on</mat-icon>
+              {{ property.city }}, {{ property.region }}
+            </p>
+            <div class="property-details">
+              <span *ngIf="property.bedrooms">
+                <mat-icon>bed</mat-icon> {{ property.bedrooms }} Chambres
+              </span>
+              <span *ngIf="property.bathrooms">
+                <mat-icon>bath</mat-icon> {{ property.bathrooms }} SDB
+              </span>
+              <span>
+                <mat-icon>square_foot</mat-icon> {{ property.area }} m²
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="no-results" *ngIf="properties.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <p>Aucune propriété trouvée avec ces critères</p>
+        <button mat-raised-button color="primary" (click)="onReset()">Réinitialiser la recherche</button>
+      </div>
+
+      <div class="pagination" *ngIf="properties.length > 0 && totalPages > 1">
+        <mat-paginator
+          [length]="totalPages * pageSize"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage"
+          (page)="onPageChange($event.pageIndex)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

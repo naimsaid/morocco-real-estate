@@ -1,0 +1,175 @@
+<div class="property-detail-container" *ngIf="!loading && property">
+  <div class="container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a routerLink="/home">Accueil</a>
+      <span>/</span>
+      <a routerLink="/properties">Propriétés</a>
+      <span>/</span>
+      <span>{{ property.title }}</span>
+    </div>
+
+    <!-- Property Header -->
+    <div class="property-header">
+      <div class="header-left">
+        <h1>{{ property.title }}</h1>
+        <p class="property-location">
+          <mat-icon>location_on</mat-icon>
+          {{ property.address }}, {{ property.city }}, {{ property.region }}
+        </p>
+      </div>
+      <div class="header-right">
+        <p class="property-price">{{ property.price | currency:'MAD':'symbol' }}</p>
+        <span class="property-type-badge">{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+      </div>
+    </div>
+
+    <!-- Property Image Gallery -->
+    <div class="property-gallery">
+      <div class="gallery-stage">
+        <img class="gallery-main" [src]="currentImage" [alt]="property.title" (error)="onImageError($event)">
+
+        <button *ngIf="galleryImages.length > 1" type="button" class="gallery-nav prev"
+                (click)="prevImage()" aria-label="Image précédente">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button *ngIf="galleryImages.length > 1" type="button" class="gallery-nav next"
+                (click)="nextImage()" aria-label="Image suivante">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+
+        <div *ngIf="galleryImages.length > 1" class="gallery-counter">
+          {{ currentImageIndex + 1 }} / {{ galleryImages.length }}
+        </div>
+
+        <div *ngIf="galleryImages.length > 1" class="gallery-dots">
+          <span *ngFor="let img of galleryImages; let i = index"
+                class="dot" [class.active]="i === currentImageIndex"
+                (click)="selectImage(i)"></span>
+        </div>
+      </div>
+
+      <div class="gallery-thumbnails" *ngIf="galleryImages.length > 1">
+        <img *ngFor="let img of galleryImages; let i = index"
+             [src]="img" [alt]="property.title"
+             class="thumbnail" [class.active]="i === currentImageIndex"
+             (click)="selectImage(i)" (error)="onImageError($event)">
+      </div>
+    </div>
+
+    <!-- Property Details Grid -->
+    <div class="property-content">
+      <div class="main-content">
+        <!-- Quick Info -->
+        <mat-card class="quick-info-card">
+          <div class="info-grid">
+            <div class="info-item" *ngIf="property.bedrooms">
+              <mat-icon>bed</mat-icon>
+              <div>
+                <span class="info-value">{{ property.bedrooms }}</span>
+                <span class="info-label">Chambres</span>
+              </div>
+            </div>
+            <div class="info-item" *ngIf="property.bathrooms">
+              <mat-icon>bath</mat-icon>
+              <div>
+                <span class="info-value">{{ property.bathrooms }}</span>
+                <span class="info-label">Salles de bain</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>square_foot</mat-icon>
+              <div>
+                <span class="info-value">{{ property.area }}</span>
+                <span class="info-label">m²</span>
+              </div>
+            </div>
+            <div class="info-item" *ngIf="property.floors">
+              <mat-icon>layers</mat-icon>
+              <div>
+                <span class="info-value">{{ property.floors }}</span>
+                <span class="info-label">Étages</span>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Description -->
+        <mat-card class="description-card">
+          <h2>Description</h2>
+          <p>{{ property.description }}</p>
+        </mat-card>
+
+        <!-- Amenities -->
+        <mat-card class="amenities-card" *ngIf="property.amenities && property.amenities.length > 0">
+          <h2>Équipements</h2>
+          <div class="amenities-list">
+            <mat-chip *ngFor="let amenity of property.amenities">
+              <mat-icon>check_circle</mat-icon>
+              {{ amenity }}
+            </mat-chip>
+          </div>
+        </mat-card>
+
+        <!-- Location -->
+        <mat-card class="location-card">
+          <h2>Emplacement</h2>
+          <p>{{ property.address }}, {{ property.city }}, {{ property.region }}</p>
+        </mat-card>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Contact Card -->
+        <mat-card class="contact-card">
+          <h2>Contacter l'annonceur</h2>
+          <div class="agent-info">
+            <div class="agent-avatar">
+              <mat-icon>account_circle</mat-icon>
+            </div>
+            <div class="agent-details">
+              <h3>{{ property.ownerName }}</h3>
+              <p>{{ property.ownerEmail }}</p>
+              <p>{{ property.ownerPhone }}</p>
+            </div>
+          </div>
+          <div class="contact-actions">
+            <button mat-raised-button color="primary" (click)="contactAgent()">
+              <mat-icon>email</mat-icon>
+              Contacter
+            </button>
+            <button mat-raised-button color="accent" (click)="toggleFavorite()">
+              <mat-icon>{{ isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+              {{ isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+            </button>
+          </div>
+        </mat-card>
+
+        <!-- Property Info Card -->
+        <mat-card class="property-info-card">
+          <h2>Informations</h2>
+          <div class="info-row">
+            <span>Type de bien:</span>
+            <span>{{ property.propertyType }}</span>
+          </div>
+          <div class="info-row">
+            <span>Type d'annonce:</span>
+            <span>{{ property.listingType === 'SALE' ? 'À vendre' : 'À louer' }}</span>
+          </div>
+          <div class="info-row">
+            <span>Référence:</span>
+            <span>#{{ property.id }}</span>
+          </div>
+          <div class="info-row">
+            <span>Publié le:</span>
+            <span>{{ property.createdAt | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>

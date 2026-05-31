@@ -1,0 +1,229 @@
+<div class="add-property-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Publier une annonce</h1>
+      <p>Remplissez le formulaire pour ajouter votre propriété</p>
+    </div>
+
+    <mat-card class="form-card">
+      <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+        <!-- Basic Information -->
+        <div class="form-section">
+          <h2>Informations de base</h2>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Titre de l'annonce</mat-label>
+            <input matInput formControlName="title" placeholder="Ex: Appartement moderne en centre-ville">
+            <mat-error *ngIf="propertyForm.get('title')?.hasError('required')">
+              Le titre est requis
+            </mat-error>
+            <mat-error *ngIf="propertyForm.get('title')?.hasError('minlength')">
+              Le titre doit contenir au moins 10 caractères
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="5" placeholder="Décrivez votre propriété en détail..."></textarea>
+            <mat-error *ngIf="propertyForm.get('description')?.hasError('required')">
+              La description est requise
+            </mat-error>
+            <mat-error *ngIf="propertyForm.get('description')?.hasError('minlength')">
+              La description doit contenir au moins 50 caractères
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Property Type -->
+        <div class="form-section">
+          <h2>Type de propriété</h2>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Type de bien</mat-label>
+              <mat-select formControlName="propertyType">
+                <mat-option *ngFor="let type of propertyTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Type d'annonce</mat-label>
+              <mat-select formControlName="listingType">
+                <mat-option *ngFor="let type of listingTypes" [value]="type">
+                  {{ type === 'SALE' ? 'À vendre' : 'À louer' }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Price and Area -->
+        <div class="form-section">
+          <h2>Prix et surface</h2>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Prix (MAD)</mat-label>
+              <input matInput type="number" formControlName="price" placeholder="Ex: 500000">
+              <mat-error *ngIf="propertyForm.get('price')?.hasError('required')">
+                Le prix est requis
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Surface (m²)</mat-label>
+              <input matInput type="number" formControlName="area" placeholder="Ex: 120">
+              <mat-error *ngIf="propertyForm.get('area')?.hasError('required')">
+                La surface est requise
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="third-width">
+              <mat-label>Chambres</mat-label>
+              <input matInput type="number" formControlName="bedrooms" placeholder="Ex: 3">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="third-width">
+              <mat-label>Salles de bain</mat-label>
+              <input matInput type="number" formControlName="bathrooms" placeholder="Ex: 2">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="third-width">
+              <mat-label>Étages</mat-label>
+              <input matInput type="number" formControlName="floors" placeholder="Ex: 1">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-section">
+          <h2>Emplacement</h2>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Adresse</mat-label>
+            <input matInput formControlName="address" placeholder="Ex: 123 Rue Mohammed V">
+            <mat-error *ngIf="propertyForm.get('address')?.hasError('required')">
+              L'adresse est requise
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Ville</mat-label>
+              <mat-select formControlName="city">
+                <mat-option *ngFor="let city of cities" [value]="city">
+                  {{ city }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="propertyForm.get('city')?.hasError('required')">
+                La ville est requise
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Région</mat-label>
+              <mat-select formControlName="region">
+                <mat-option *ngFor="let region of regions" [value]="region">
+                  {{ region }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="propertyForm.get('region')?.hasError('required')">
+                La région est requise
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Latitude (optionnel)</mat-label>
+              <input matInput type="number" formControlName="latitude" placeholder="Ex: 33.5731">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Longitude (optionnel)</mat-label>
+              <input matInput type="number" formControlName="longitude" placeholder="Ex: -7.5898">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="form-section">
+          <h2>Équipements</h2>
+          
+          <div class="amenity-input">
+            <mat-form-field appearance="outline">
+              <mat-label>Ajouter un équipement</mat-label>
+              <input matInput formControlName="amenityInput" placeholder="Ex: Piscine, Garage, Jardin...">
+            </mat-form-field>
+            <button mat-raised-button color="primary" type="button" (click)="addAmenity()">
+              <mat-icon>add</mat-icon>
+              Ajouter
+            </button>
+          </div>
+
+          <div class="amenities-list" *ngIf="amenities.length > 0">
+            <mat-chip *ngFor="let amenity of amenities; let i = index" (removed)="removeAmenity(i)">
+              {{ amenity }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div class="form-section">
+          <h2>Photos de l'annonce</h2>
+          <p class="section-hint">Ajoutez jusqu'à {{ maxImages }} images (max {{ maxFileSizeMb }} Mo chacune). La première image sera l'image principale.</p>
+
+          <input #fileInput type="file" accept="image/*" multiple hidden (change)="onFilesSelected($event)">
+          <button mat-raised-button color="primary" type="button"
+                  (click)="fileInput.click()" [disabled]="imagePreviews.length >= maxImages">
+            <mat-icon>add_photo_alternate</mat-icon>
+            Ajouter des images
+          </button>
+
+          <div class="image-previews" *ngIf="imagePreviews.length > 0">
+            <div class="image-preview" *ngFor="let img of imagePreviews; let i = index">
+              <img [src]="img" alt="Aperçu">
+              <span class="primary-badge" *ngIf="i === 0">Principale</span>
+              <div class="image-actions">
+                <button mat-icon-button type="button" title="Déplacer à gauche"
+                        (click)="moveImage(i, -1)" [disabled]="i === 0">
+                  <mat-icon>arrow_back</mat-icon>
+                </button>
+                <button mat-icon-button type="button" title="Supprimer" (click)="removeImage(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button type="button" title="Déplacer à droite"
+                        (click)="moveImage(i, 1)" [disabled]="i === imagePreviews.length - 1">
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Options -->
+        <div class="form-section">
+          <h2>Options</h2>
+          
+          <mat-checkbox formControlName="featured">
+            Mettre en vedette (Cette propriété apparaîtra sur la page d'accueil)
+          </mat-checkbox>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/dashboard">Annuler</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            <span *ngIf="!loading">Publier l'annonce</span>
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

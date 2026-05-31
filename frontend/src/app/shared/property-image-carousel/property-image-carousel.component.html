@@ -1,0 +1,22 @@
+<div class="carousel">
+  <img class="carousel-image" [src]="currentImage" [alt]="alt" (error)="onImageError($event)">
+
+  <button *ngIf="displayImages.length > 1" type="button" class="carousel-nav prev"
+          (click)="prev($event)" aria-label="Image précédente">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <button *ngIf="displayImages.length > 1" type="button" class="carousel-nav next"
+          (click)="next($event)" aria-label="Image suivante">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+
+  <div *ngIf="displayImages.length > 1" class="carousel-counter">
+    {{ currentIndex + 1 }} / {{ displayImages.length }}
+  </div>
+
+  <div *ngIf="displayImages.length > 1" class="carousel-dots">
+    <span *ngFor="let img of displayImages; let i = index"
+          class="dot" [class.active]="i === currentIndex"
+          (click)="select(i, $event)"></span>
+  </div>
+</div>

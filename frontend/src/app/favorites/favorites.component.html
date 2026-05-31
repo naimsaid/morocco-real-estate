@@ -1,0 +1,50 @@
+<div class="favorites-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>Mes favoris</h1>
+      <p>Propriétés que vous avez sauvegardées</p>
+    </div>
+
+    <div class="loading-container" *ngIf="loading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <div class="favorites-grid" *ngIf="!loading">
+      <mat-card *ngFor="let favorite of favorites" class="favorite-card">
+        <div class="favorite-image" (click)="viewProperty(favorite.property.id)">
+          <app-property-image-carousel [images]="favorite.property.imageUrls" [alt]="favorite.property.title"></app-property-image-carousel>
+          <button mat-icon-button class="remove-favorite-btn" (click)="removeFavorite(favorite.property.id)">
+            <mat-icon>favorite</mat-icon>
+          </button>
+        </div>
+        <mat-card-content (click)="viewProperty(favorite.property.id)">
+          <h3 class="property-title">{{ favorite.property.title }}</h3>
+          <p class="property-price">{{ favorite.property.price | currency:'MAD':'symbol' }}</p>
+          <p class="property-location">
+            <mat-icon>location_on</mat-icon>
+            {{ favorite.property.city }}, {{ favorite.property.region }}
+          </p>
+          <div class="property-details">
+            <span *ngIf="favorite.property.bedrooms">
+              <mat-icon>bed</mat-icon> {{ favorite.property.bedrooms }} Chambres
+            </span>
+            <span *ngIf="favorite.property.bathrooms">
+              <mat-icon>bath</mat-icon> {{ favorite.property.bathrooms }} SDB
+            </span>
+            <span>
+              <mat-icon>square_foot</mat-icon> {{ favorite.property.area }} m²
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="no-favorites" *ngIf="favorites.length === 0">
+        <mat-icon>favorite_border</mat-icon>
+        <p>Vous n'avez pas encore de favoris</p>
+        <button mat-raised-button color="primary" routerLink="/search">
+          Explorer les propriétés
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

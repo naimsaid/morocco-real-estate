@@ -1,0 +1,44 @@
+<div class="login-container">
+  <div class="container">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Connexion</h1>
+        <p>Connectez-vous à votre compte Maroc Immobilier</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="votre@email.com">
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            L'email est requis
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Email invalide
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="••••••••">
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Le mot de passe est requis
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+            Le mot de passe doit contenir au moins 6 caractères
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          <span *ngIf="!loading">Se connecter</span>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>Vous n'avez pas de compte?</p>
+        <button mat-button routerLink="/register">S'inscrire</button>
+      </div>
+    </div>
+  </div>
+</div>
